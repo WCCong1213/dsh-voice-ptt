@@ -296,10 +296,13 @@ check('fillerCleanup off → raw transcript kept', actions.inserts[0] === speech
 await defaultSettings();
 
 // ── 7b. cleanup must not eat a word that merely contains a filler string ────
-await reset(); speech.transcript = '那个人 经理 说 对对对';
-await act(async () => { key('keydown', 'Space'); await sleep(400); key('keyup', 'Space'); await sleep(80); });
+// autoSend is off so the transcript lands in the composer instead of being sent:
+// this test is about the text, not about submission.
+await reset(); await setSettings({ autoSend: false }); speech.transcript = '那个人 经理 说 对对对';
+await act(async () => { key('keydown', 'Space'); await sleep(400); key('keyup', 'Space'); await sleep(120); });
 check('cleanup keeps 那个人 (no leading boundary) and drops standalone 对对对; CJK gaps closed', actions.inserts[0] === '那个人经理说', `inserted="${actions.inserts[0]}"`);
 speech.transcript = '嗯 帮我看看那个报表哪里不对 就是说逐项核对一下';
+await defaultSettings();
 
 // ── 8. spaceEnabled off → Space ignored; click re-enables ─────────────────
 await reset();
