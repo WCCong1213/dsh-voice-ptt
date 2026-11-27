@@ -1,0 +1,7 @@
+# Keep the plugin source clean; test artifacts and local tooling stay out.
+node_modules/
+*.log
+probe.wav
+probe*.json
+.DS_Store
+Thumbs.db
