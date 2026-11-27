@@ -1,0 +1,42 @@
+{
+  "name": "@wccong1213/dsh-voice-ptt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Push-to-talk voice input for the DSH composer: hold Space to talk, release to transcribe and send. Reuses the official local SenseVoice recognizer; audio never leaves the machine. 按住空格说话，松开自动转写并发送；复用官方本地识别，音频不出本机。",
+  "type": "module",
+  "license": "MIT",
+  "author": "WCCong1213",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WCCong1213/dsh-voice-ptt.git"
+  },
+  "engines": {
+    "dsh": ">=0.2.0-rc.2 <0.4.0"
+  },
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./icon": "./icon.svg",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}
