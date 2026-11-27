@@ -1,0 +1,6 @@
+# dsh-voice-ptt bundle patch: mount the Host half (an empty marker). The browser
+# half rides the `dsh.client` manifest entry. Recognition is delegated to the
+# official speech Remote, so this bundle registers no route and no tool.
+- insert:
+    - id: voice-ptt
+      name: '@wccong1213/dsh-voice-ptt'
