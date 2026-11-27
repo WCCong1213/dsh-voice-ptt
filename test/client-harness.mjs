@@ -350,6 +350,31 @@ await act(async () => { await sleep(60); key('keyup', 'Space'); });
 check('quote + typed text → Space is a plain space again', kdMixed.defaultPrevented === false && mic.started === startedMixed, `prevented=${kdMixed.defaultPrevented}`);
 await reset();
 
+// ── 9d. dropped file paths are references, not typing ──────────────────────
+for (const [label, draftText] of [
+	['quoted Windows path', '"F:\\1 工作\\小组培训\\报表.xlsx"'],
+	['bare Windows path', 'F:\\1 工作\\报表.xlsx'],
+	['forward-slash path', 'F:/1 工作/报表.xlsx'],
+	['quoted posix path', '"/home/me/report.docx"'],
+	['two dropped paths', '"F:\\a.xlsx"\n"F:\\b.docx"'],
+	['path plus quote', '"F:\\a.xlsx"\n> 引用一段'],
+]) {
+	await reset();
+	await act(async () => { store.set({ draft: draftText }); await sleep(40); });
+	const kdPath = key('keydown', 'Space');
+	await act(async () => { await sleep(400); key('keyup', 'Space'); await sleep(120); });
+	check(`${label} → Space records`, kdPath.defaultPrevented === true, `prevented=${kdPath.defaultPrevented} draft=${JSON.stringify(draftText)}`);
+}
+
+// A path followed by prose is prose: the user typed something next to it.
+await reset();
+await act(async () => { store.set({ draft: '"F:\\a.xlsx" 帮我分析这个' }); await sleep(40); });
+const startedPathProse = mic.started;
+const kdPathProse = key('keydown', 'Space');
+await act(async () => { await sleep(60); key('keyup', 'Space'); });
+check('dropped path + typed prose → Space is a plain space', kdPathProse.defaultPrevented === false && mic.started === startedPathProse, `prevented=${kdPathProse.defaultPrevented}`);
+await reset();
+
 // ── 10. mic permission denied → toast, no throw ─────────────────────────────
 await reset(); mic.permission = 'denied'; const startedBefore = mic.started;
 await act(async () => { key('keydown', 'Space'); await sleep(400); key('keyup', 'Space'); await sleep(30); });
